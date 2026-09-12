@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App de Elby - Llamadas Rápidas y Salud</title>
+  <meta name="description" content="Aplicación de llamadas rápidas y emergencias con alta accesibilidad para Elby.">
+  <meta name="theme-color" content="#ffffff">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Outift / Inter for maximum readability -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 8px 30px rgba(0,0,0,0.08)',
+            'btn': '0 6px 20px rgba(0,0,0,0.12)',
+            'btn-active': '0 2px 8px rgba(0,0,0,0.15)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilos de accesibilidad focus y animaciones */
+    *:focus-visible {
+      outline: 4px solid #2563eb !important;
+      outline-offset: 4px !important;
+    }
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .btn-touch-active:active {
+      transform: scale(0.97);
+    }
+  </style>
+
+  <!-- Web App Manifest Dynamic Generator -->
+  <script>
+    const manifestData = {
+      "name": "App de Elby",
+      "short_name": "Elby",
+      "start_url": "./",
+      "display": "standalone",
+      "background_color": "#ffffff",
+      "theme_color": "#2563eb",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>",
+          "sizes": "192x192 512x512",
+          "type": "image/svg+xml"
+        }
+      ]
+    };
+    const stringManifest = JSON.stringify(manifestData);
+    const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+    const manifestUrl = URL.createObjectURL(blobManifest);
+    const linkManifest = document.createElement('link');
+    linkManifest.rel = 'manifest';
+    linkManifest.href = manifestUrl;
+    document.head.appendChild(linkManifest);
+  </script>
+</head>
+<body class="min-h-screen font-sans bg-slate-50 flex flex-col items-center pb-24">
+
+  <!-- ENCABEZADO Y MIS DATOS -->
+  <header class="w-full max-w-lg bg-white border-b-4 border-slate-200 shadow-md p-5 sticky top-0 z-30">
+    <div class="flex items-center justify-between gap-3">
+      <div>
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+          App de Elby
+        </h1>
+        <p class="text-xl font-bold text-blue-700 mt-1 flex items-center gap-1.5 bg-blue-50 px-3 py-1 rounded-xl border border-blue-200 inline-block">
+          <span>📱</span> Mi número: <span class="font-extrabold text-slate-900">9 3516 18-6364</span>
+        </p>
+      </div>
+
+      <!-- BOTÓN CONFIGURACIÓN -->
+      <button 
+        id="openSettingsBtn"
+        onclick="openSettingsModal()"
+        class="bg-slate-100 hover:bg-slate-200 text-slate-800 border-2 border-slate-300 p-3 rounded-2xl flex flex-col items-center justify-center font-bold text-sm btn-touch-active focus:ring-4 focus:ring-slate-400"
+        aria-label="Abrir configuración de contactos y carnet"
+      >
+        <span class="text-2xl">⚙️</span>
+        <span>Ajustes</span>
+      </button>
+    </div>
+
+    <!-- BOTÓN BOTE/INSTALAR PWA -->
+    <div id="installPwaContainer" class="mt-4 hidden">
+      <button 
+        id="installPwaBtn"
+        onclick="triggerPwaInstall()"
+        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xl py-3 px-4 rounded-2xl shadow-btn border-b-4 border-emerald-800 flex items-center justify-center gap-3 animate-pulse btn-touch-active"
+        aria-label="Instalar la aplicación en el celular"
+      >
+        <span class="text-3xl">📱</span>
+        <span>Instalar App en el Celular</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="w-full max-w-lg px-4 pt-6 space-y-8 flex-1">
+
+    <!-- SECCIÓN 1: MI FAMILIA -->
+    <section aria-labelledby="sec-familia" class="bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-card space-y-4">
+      <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+        <h2 id="sec-familia" class="text-2xl font-black text-slate-900 flex items-center gap-2">
+          <span>👨‍👩‍👧‍👦</span> Mi Familia <span class="text-base font-semibold text-slate-500">(Llamadas)</span>
+        </h2>
+        <span class="text-xs font-bold uppercase tracking-wider bg-slate-100 px-2.5 py-1 rounded-full text-slate-600">
+          Un Toque
+        </span>
+      </div>
+
+      <!-- Subsección Hijos -->
+      <div class="space-y-3">
+        <h3 class="text-lg font-bold text-slate-600 uppercase tracking-wide flex items-center gap-1.5">
+          <span>👶</span> Hijos
+        </h3>
+        <div id="hijosList" class="grid grid-cols-1 gap-3">
+          <!-- Dinámico mediante JS -->
+        </div>
+      </div>
+
+      <!-- Subsección Hermanos -->
+      <div class="space-y-3 pt-2">
+        <h3 class="text-lg font-bold text-slate-600 uppercase tracking-wide flex items-center gap-1.5">
+          <span>🤝</span> Hermanos/as
+        </h3>
+        <div id="hermanosList" class="grid grid-cols-1 gap-3">
+          <!-- Dinámico mediante JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: SALUD Y EMERGENCIAS -->
+    <section aria-labelledby="sec-salud" class="bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-card space-y-4">
+      <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+        <h2 id="sec-salud" class="text-2xl font-black text-slate-900 flex items-center gap-2">
+          <span>🚨</span> Salud y Emergencias
+        </h2>
+        <span class="text-xs font-bold uppercase tracking-wider bg-red-100 px-2.5 py-1 rounded-full text-red-700">
+          Urgencias
+        </span>
+      </div>
+
+      <div id="emergenciasList" class="grid grid-cols-1 gap-4">
+        <!-- Dinámico mediante JS -->
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: CARNET DE OBRA SOCIAL Y SALUD -->
+    <section aria-labelledby="sec-carnet" class="bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white p-6 rounded-3xl shadow-xl border-4 border-blue-400 space-y-4">
+      <div class="flex items-center justify-between border-b border-blue-400/40 pb-3">
+        <h2 id="sec-carnet" class="text-2xl font-black text-white flex items-center gap-2">
+          <span>🪪</span> Mi Carnet de Salud
+        </h2>
+        <button 
+          onclick="openHealthEditModal()" 
+          class="bg-blue-600/80 hover:bg-blue-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl border border-blue-300 flex items-center gap-1"
+          aria-label="Editar información del carnet de salud"
+        >
+          ✏️ Editar
+        </button>
+      </div>
+
+      <!-- Tarjeta Visual Credencial -->
+      <div class="bg-white text-slate-900 p-5 rounded-2xl shadow-inner space-y-3.5 border border-slate-200">
+        <div class="flex justify-between items-start border-b border-slate-200 pb-2">
+          <div>
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Obra Social / Prepaga</span>
+            <p id="cardObraSocial" class="text-2xl font-black text-blue-900">PAMI / OSECAC</p>
+          </div>
+          <span class="text-3xl">🏥</span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3">
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">📄 DNI:</span>
+            <p id="cardDNI" class="text-xl font-extrabold text-slate-800">12.345.678</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-red-50 p-2.5 rounded-xl border border-red-200">
+              <span class="text-xs font-bold text-red-600 uppercase tracking-wider block">🩸 Sangre:</span>
+              <p id="cardBlood" class="text-xl font-extrabold text-red-700">O +</p>
+            </div>
+            <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+              <span class="text-xs font-bold text-amber-700 uppercase tracking-wider block">⚠️ Alergias:</span>
+              <p id="cardAlergias" class="text-lg font-bold text-amber-900">Penicilina</p>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 p-3 rounded-xl border border-blue-200">
+            <span class="text-xs font-bold text-blue-800 uppercase tracking-wider block">🩺 Información Médica:</span>
+            <p id="cardInfoMedica" class="text-base font-semibold text-slate-800 leading-snug mt-1">
+              Hipertensión leve. Toma Enalapril 10mg por la mañana.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL DE CONFIGURACIÓN Y EDICIÓN -->
+  <dialog id="settingsModal" class="p-0 rounded-3xl backdrop:bg-slate-900/60 max-w-lg w-[92%] shadow-2xl overflow-hidden border-2 border-slate-300">
+    <div class="bg-slate-900 text-white p-5 flex justify-between items-center">
+      <h3 class="text-2xl font-bold flex items-center gap-2">
+        <span>⚙️</span> Configurar Botones
+      </h3>
+      <button 
+        onclick="closeSettingsModal()" 
+        class="text-white hover:bg-slate-800 text-2xl font-black px-3 py-1 rounded-xl"
+        aria-label="Cerrar modal"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="p-5 space-y-6 max-h-[75vh] overflow-y-auto bg-slate-50">
+      
+      <!-- FORMULARIO NUEVO BOTÓN -->
+      <form id="addContactForm" onsubmit="handleSaveContact(event)" class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm space-y-3">
+        <h4 class="text-lg font-bold text-slate-800 border-b pb-2 flex items-center gap-2">
+          <span>➕</span> Agregar / Modificar Contacto
+        </h4>
+        <input type="hidden" id="editContactId" value="">
+
+        <div>
+          <label for="contactCategory" class="block text-sm font-bold text-slate-700 mb-1">Sección / Categoría:</label>
+          <select id="contactCategory" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-semibold focus:border-blue-600">
+            <option value="hijos">Hijos</option>
+            <option value="hermanos">Hermanos</option>
+            <option value="emergencias">Salud y Emergencias</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="contactName" class="block text-sm font-bold text-slate-700 mb-1">Nombre o Título:</label>
+          <input type="text" id="contactName" required placeholder="Ej: GABRIELA" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-bold">
+        </div>
+
+        <div>
+          <label for="contactPhone" class="block text-sm font-bold text-slate-700 mb-1">Número de Teléfono (sin espacios):</label>
+          <input type="tel" id="contactPhone" required placeholder="Ej: 107 o 3516123456" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-bold">
+        </div>
+
+        <div>
+          <label for="contactEmoji" class="block text-sm font-bold text-slate-700 mb-1">Emoji / Icono:</label>
+          <select id="contactEmoji" class="w-full text-xl p-3 rounded-xl border-2 border-slate-300 font-semibold">
+            <option value="👤">👤 Perfil</option>
+            <option value="📞">📞 Teléfono</option>
+            <option value="👩">👩 Mujer</option>
+            <option value="👨">👨 Hombre</option>
+            <option value="🚑">🚑 Ambulancia</option>
+            <option value="🏥">🏥 Hospital</option>
+            <option value="👨‍⚕️">👨‍⚕️ Doctor</option>
+            <option value="❤️">❤️ Corazón</option>
+          </select>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg py-3 rounded-xl shadow-md">
+            💾 Guardar Botón
+          </button>
+          <button type="button" onclick="resetForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-3 rounded-xl">
+            Limpiar
+          </button>
+        </div>
+      </form>
+
+      <!-- LISTA DE BOTONES ACTUALES -->
+      <div class="space-y-3">
+        <h4 class="text-lg font-bold text-slate-800">Botones Actuales:</h4>
+        <div id="settingsContactList" class="space-y-2">
+          <!-- Renderizado con JS -->
+        </div>
+      </div>
+
+      <!-- BOTÓN RESTAURAR VALORES DE FÁBRICA -->
+      <div class="pt-4 border-t border-slate-300">
+        <button 
+          onclick="restoreDefaults()" 
+          class="w-full bg-slate-200 hover:bg-red-100 hover:text-red-700 text-slate-600 font-bold text-sm py-2 rounded-xl border border-slate-300 transition"
+        >
+          🔄 Restaurar botones originales
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MODAL EDITAR CARNET DE SALUD -->
+  <dialog id="healthModal" class="p-0 rounded-3xl backdrop:bg-slate-900/60 max-w-lg w-[92%] shadow-2xl overflow-hidden border-2 border-slate-300">
+    <div class="bg-blue-900 text-white p-5 flex justify-between items-center">
+      <h3 class="text-2xl font-bold flex items-center gap-2">
+        <span>🪪</span> Editar Carnet de Salud
+      </h3>
+      <button 
+        onclick="closeHealthModal()" 
+        class="text-white hover:bg-blue-800 text-2xl font-black px-3 py-1 rounded-xl"
+        aria-label="Cerrar modal de carnet"
+      >
+        ✕
+      </button>
+    </div>
+
+    <form onsubmit="handleSaveHealthCard(event)" class="p-5 space-y-4 bg-slate-50">
+      <div>
+        <label for="editObraSocial" class="block text-sm font-bold text-slate-700 mb-1">Obra Social / Prepaga:</label>
+        <input type="text" id="editObraSocial" required class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-bold">
+      </div>
+
+      <div>
+        <label for="editDNI" class="block text-sm font-bold text-slate-700 mb-1">DNI / Documento:</label>
+        <input type="text" id="editDNI" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-bold">
+      </div>
+
+      <div>
+        <label for="editBlood" class="block text-sm font-bold text-slate-700 mb-1">Tipo de Sangre:</label>
+        <input type="text" id="editBlood" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-bold">
+      </div>
+
+      <div>
+        <label for="editAlergias" class="block text-sm font-bold text-slate-700 mb-1">Alergias:</label>
+        <input type="text" id="editAlergias" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-bold">
+      </div>
+
+      <div>
+        <label for="editInfoMedica" class="block text-sm font-bold text-slate-700 mb-1">Información Médica Importante:</label>
+        <textarea id="editInfoMedica" rows="3" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-semibold"></textarea>
+      </div>
+
+      <div class="pt-2 flex gap-2">
+        <button type="submit" class="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-black text-lg py-3 rounded-xl shadow-md">
+          💾 Guardar Carnet
+        </button>
+        <button type="button" onclick="closeHealthModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-3 rounded-xl">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- JAVASCRIPT LÓGICA DE APLICACIÓN Y PWA -->
+  <script>
+    // DATOS DE CONTACTOS POR DEFECTO REQUERIDOS
+    const defaultContacts = [
+      { id: '1', category: 'hijos', name: 'GABRIELA', phone: '3516186364', emoji: '👤', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
+      { id: '2', category: 'hijos', name: 'ANDRES', phone: '3516186364', emoji: '👤', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
+      { id: '3', category: 'hermanos', name: 'TATIANA', phone: '3516186364', emoji: '👤', style: 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700' },
+      { id: '4', category: 'emergencias', name: 'EMERGENCIAS (107)', phone: '107', emoji: '🚑', style: 'bg-red-600 text-white border-red-800 hover:bg-red-700' },
+      { id: '5', category: 'emergencias', name: 'HOSPITAL ITALIANO', phone: '08005551234', emoji: '🏥', style: 'bg-indigo-600 text-white border-indigo-800 hover:bg-indigo-700' },
+      { id: '6', category: 'emergencias', name: 'MÉDICO DE CABECERA (RAUL)', phone: '3516186364', emoji: '👨‍⚕️', style: 'bg-teal-600 text-white border-teal-800 hover:bg-teal-700' }
+    ];
+
+    const defaultHealthData = {
+      obraSocial: 'PAMI / OSECAC',
+      dni: '12.345.678',
+      blood: 'O +',
+      alergias: 'Penicilina',
+      infoMedica: 'Hipertensión leve. Toma Enalapril 10mg por la mañana.'
+    };
+
+    let contacts = [];
+    let healthData = {};
+
+    // INICIALIZACIÓN
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      renderApp();
+      setupPwaInstaller();
+      registerInlineServiceWorker();
+    });
+
+    function loadData() {
+      const savedContacts = localStorage.getItem('elby_contacts');
+      if (savedContacts) {
+        contacts = JSON.parse(savedContacts);
+      } else {
+        contacts = [...defaultContacts];
+        saveContactsToStorage();
+      }
+
+      const savedHealth = localStorage.getItem('elby_health');
+      if (savedHealth) {
+        healthData = JSON.parse(savedHealth);
+      } else {
+        healthData = { ...defaultHealthData };
+        saveHealthToStorage();
+      }
+    }
+
+    function saveContactsToStorage() {
+      localStorage.setItem('elby_contacts', JSON.stringify(contacts));
+    }
+
+    function saveHealthToStorage() {
+      localStorage.setItem('elby_health', JSON.stringify(healthData));
+    }
+
+    function restoreDefaults() {
+      if (confirm('¿Estás seguro de restaurar los botones y datos originales?')) {
+        contacts = [...defaultContacts];
+        healthData = { ...defaultHealthData };
+        saveContactsToStorage();
+        saveHealthToStorage();
+        renderApp();
+        closeSettingsModal();
+      }
+    }
+
+    // RENDERIZADO PRINCIPAL DE BOTONES
+    function renderApp() {
+      const hijosContainer = document.getElementById('hijosList');
+      const hermanosContainer = document.getElementById('hermanosList');
+      const emergenciasContainer = document.getElementById('emergenciasList');
+
+      hijosContainer.innerHTML = '';
+      hermanosContainer.innerHTML = '';
+      emergenciasContainer.innerHTML = '';
+
+      const hijos = contacts.filter(c => c.category === 'hijos');
+      const hermanos = contacts.filter(c => c.category === 'hermanos');
+      const emergencias = contacts.filter(c => c.category === 'emergencias');
+
+      if (hijos.length === 0) {
+        hijosContainer.innerHTML = '<p class="text-slate-400 italic text-center">No hay contactos añadidos.</p>';
+      } else {
+        hijos.forEach(c => hijosContainer.appendChild(createCallButton(c)));
+      }
+
+      if (hermanos.length === 0) {
+        hermanosContainer.innerHTML = '<p class="text-slate-400 italic text-center">No hay contactos añadidos.</p>';
+      } else {
+        hermanos.forEach(c => hermanosContainer.appendChild(createCallButton(c)));
+      }
+
+      if (emergencias.length === 0) {
+        emergenciasContainer.innerHTML = '<p class="text-slate-400 italic text-center">No hay contactos añadidos.</p>';
+      } else {
+        emergencias.forEach(c => emergenciasContainer.appendChild(createCallButton(c, true)));
+      }
+
+      // Render Carnet de Salud
+      document.getElementById('cardObraSocial').textContent = healthData.obraSocial || 'No especificada';
+      document.getElementById('cardDNI').textContent = healthData.dni || 'Sin registrar';
+      document.getElementById('cardBlood').textContent = healthData.blood || '-';
+      document.getElementById('cardAlergias').textContent = healthData.alergias || 'Ninguna';
+      document.getElementById('cardInfoMedica').textContent = healthData.infoMedica || 'Sin información adicional.';
+
+      renderSettingsList();
+    }
+
+    function createCallButton(contact, isEmergency = false) {
+      const a = document.createElement('a');
+      a.href = `tel:${contact.phone}`;
+      
+      // Estilos accesibles con Tailwind: Botones grandes, texto clarísimo, touch target enorme (>64px)
+      let baseStyle = "w-full min-h-[76px] rounded-2xl border-b-4 shadow-btn font-extrabold flex items-center justify-between px-5 py-4 transition-all duration-150 btn-touch-active focus:ring-4 focus:ring-blue-500 text-left cursor-pointer text-slate-900";
+      
+      let colorClasses = contact.style || "bg-blue-600 text-white border-blue-800 hover:bg-blue-700";
+
+      if (isEmergency && contact.phone === '107') {
+        colorClasses = "bg-red-600 hover:bg-red-700 text-white border-red-900 shadow-red-200 text-2xl";
+      }
+
+      a.className = `${baseStyle} ${colorClasses}`;
+      a.setAttribute('aria-label', `Llamar a ${contact.name}`);
+
+      a.innerHTML = `
+        <div class="flex items-center gap-4">
+          <span class="text-4xl bg-white/20 p-2 rounded-xl flex items-center justify-center shrink-0">
+            ${contact.emoji || '👤'}
+          </span>
+          <div>
+            <span class="text-2xl font-black block tracking-tight leading-tight">${contact.name}</span>
+            <span class="text-sm font-semibold opacity-90 block">Llamar: ${contact.phone}</span>
+          </div>
+        </div>
+        <span class="text-3xl shrink-0">📞</span>
+      `;
+
+      return a;
+    }
+
+    // MODAL DE AJUSTES Y LISTADO PARA EDITAR/ELIMINAR
+    function openSettingsModal() {
+      document.getElementById('settingsModal').showModal();
+      renderSettingsList();
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').close();
+      resetForm();
+    }
+
+    function renderSettingsList() {
+      const container = document.getElementById('settingsContactList');
+      container.innerHTML = '';
+
+      contacts.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-2 shadow-sm';
+        div.innerHTML = `
+          <div class="flex items-center gap-2 overflow-hidden">
+            <span class="text-2xl">${c.emoji}</span>
+            <div class="truncate">
+              <p class="font-bold text-slate-900 text-base truncate">${c.name}</p>
+              <p class="text-xs font-semibold text-slate-500">${c.phone} • <span class="uppercase">${c.category}</span></p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <button onclick="editContact('${c.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-amber-300">
+              ✏️ Editar
+            </button>
+            <button onclick="deleteContact('${c.id}')" class="bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-red-300">
+              🗑️
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function handleSaveContact(e) {
+      e.preventDefault();
+      const id = document.getElementById('editContactId').value;
+      const category = document.getElementById('contactCategory').value;
+      const name = document.getElementById('contactName').value.trim().toUpperCase();
+      const phone = document.getElementById('contactPhone').value.trim();
+      const emoji = document.getElementById('contactEmoji').value;
+
+      if (id) {
+        // Editar existente
+        const index = contacts.findIndex(c => c.id === id);
+        if (index !== -1) {
+          contacts[index] = { ...contacts[index], category, name, phone, emoji };
+        }
+      } else {
+        // Crear nuevo
+        let style = 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700';
+        if (category === 'hermanos') style = 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700';
+        if (category === 'emergencias') style = 'bg-indigo-600 text-white border-indigo-800 hover:bg-indigo-700';
+
+        const newContact = {
+          id: Date.now().toString(),
+          category,
+          name,
+          phone,
+          emoji,
+          style
+        };
+        contacts.push(newContact);
+      }
+
+      saveContactsToStorage();
+      renderApp();
+      resetForm();
+    }
+
+    function editContact(id) {
+      const contact = contacts.find(c => c.id === id);
+      if (!contact) return;
+
+      document.getElementById('editContactId').value = contact.id;
+      document.getElementById('contactCategory').value = contact.category;
+      document.getElementById('contactName').value = contact.name;
+      document.getElementById('contactPhone').value = contact.phone;
+      document.getElementById('contactEmoji').value = contact.emoji || '👤';
+
+      document.querySelector('#addContactForm h4').innerHTML = '✏️ Modificar Botón';
+    }
+
+    function deleteContact(id) {
+      if (confirm('¿Deseas eliminar este botón de llamada?')) {
+        contacts = contacts.filter(c => c.id !== id);
+        saveContactsToStorage();
+        renderApp();
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('editContactId').value = '';
+      document.getElementById('addContactForm').reset();
+      document.querySelector('#addContactForm h4').innerHTML = '➕ Agregar / Modificar Contacto';
+    }
+
+    // MODAL DE CARNET DE SALUD
+    function openHealthEditModal() {
+      document.getElementById('editObraSocial').value = healthData.obraSocial || '';
+      document.getElementById('editDNI').value = healthData.dni || '';
+      document.getElementById('editBlood').value = healthData.blood || '';
+      document.getElementById('editAlergias').value = healthData.alergias || '';
+      document.getElementById('editInfoMedica').value = healthData.infoMedica || '';
+
+      document.getElementById('healthModal').showModal();
+    }
+
+    function closeHealthModal() {
+      document.getElementById('healthModal').close();
+    }
+
+    function handleSaveHealthCard(e) {
+      e.preventDefault();
+      healthData = {
+        obraSocial: document.getElementById('editObraSocial').value.trim(),
+        dni: document.getElementById('editDNI').value.trim(),
+        blood: document.getElementById('editBlood').value.trim(),
+        alergias: document.getElementById('editAlergias').value.trim(),
+        infoMedica: document.getElementById('editInfoMedica').value.trim()
+      };
+
+      saveHealthToStorage();
+      renderApp();
+      closeHealthModal();
+    }
+
+    // PWA INSTALLER HANDLING
+    let deferredPrompt;
+
+    function setupPwaInstaller() {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const container = document.getElementById('installPwaContainer');
+        if (container) container.classList.remove('hidden');
+      });
+
+      window.addEventListener('appinstalled', () => {
+        const container = document.getElementById('installPwaContainer');
+        if (container) container.classList.add('hidden');
+        console.log('PWA instalada correctamente');
+      });
+    }
+
+    function triggerPwaInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('El usuario aceptó instalar la PWA');
+          }
+          deferredPrompt = null;
+          document.getElementById('installPwaContainer').classList.add('hidden');
+        });
+      } else {
+        alert('Para instalar en tu celular:\n- En Android (Chrome): Toca los 3 puntos superiores y selecciona "Instalar aplicación" o "Agregar a la pantalla principal".\n- En iPhone (Safari): Toca el botón Compartir y elige "Agregar al inicio".');
+      }
+    }
+
+    // REGISTRO DE SERVICE WORKER INLINE
+    function registerInlineServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        const swCode = `
+          const CACHE_NAME = 'elby-pwa-v1';
+          self.addEventListener('install', (e) => {
+            e.waitUntil(
+              caches.open(CACHE_NAME).then((cache) => {
+                return cache.addAll(['./']);
+              })
+            );
+          });
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              caches.match(e.request).then((res) => res || fetch(e.request))
+            );
+          });
+        `;
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+
+        navigator.serviceWorker.register(swUrl)
+          .then(reg => console.log('Service Worker registrado:', reg.scope))
+          .catch(err => console.error('Error registrando Service Worker:', err));
+      }
+    }
+  </script>
+</body>
+</html>
