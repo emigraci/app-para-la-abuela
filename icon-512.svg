@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e40af" />
+    </linearGradient>
+    <filter id="shadow512" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad512)" />
+  <!-- Círculo interior blanco -->
+  <circle cx="256" cy="256" r="180" fill="#ffffff" filter="url(#shadow512)" opacity="0.95"/>
+  <!-- Ícono de Teléfono grande -->
+  <g transform="translate(145, 145) scale(2.65)">
+    <path d="M12 4a8 8 0 0 0-8 8c0 35.3 28.7 64 64 64a8 8 0 0 0 8-8v-12a8 8 0 0 0-6.1-7.8l-14-3.5a8 8 0 0 0-8.3 3.3l-4.4 6.6C30.4 49.3 22.7 41.6 17.4 36.8l6.6-4.4a8 8 0 0 0 3.3-8.3l-3.5-14A8 8 0 0 0 16 4h-4z" fill="#2563eb" transform="scale(0.85) translate(4, 4)"/>
+  </g>
+  <!-- Cruz de salud roja -->
+  <rect x="305" y="115" width="75" height="75" rx="18" fill="#ef4444"/>
+  <rect x="331" y="128" width="22" height="49" rx="5" fill="#ffffff"/>
+  <rect x="318" y="141.5" width="49" height="22" rx="5" fill="#ffffff"/>
+</svg>

@@ -2,15 +2,23 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>App de Elby - Llamadas Rápidas y Salud</title>
-  <meta name="description" content="Aplicación de llamadas rápidas y emergencias con alta accesibilidad para Elby.">
-  <meta name="theme-color" content="#ffffff">
-  
+  <meta name="description" content="Aplicación de llamadas rápidas, emergencias y carnet de salud con alta accesibilidad para Elby.">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Elby">
+
+  <!-- Manifest y Favicon -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon-192.svg">
+  <link rel="apple-touch-icon" href="icon-192.svg">
+
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts: Outift / Inter for maximum readability -->
+  <!-- Google Fonts: Outfit for maximum readability -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&display=swap" rel="stylesheet">
@@ -48,32 +56,6 @@
       transform: scale(0.97);
     }
   </style>
-
-  <!-- Web App Manifest Dynamic Generator -->
-  <script>
-    const manifestData = {
-      "name": "App de Elby",
-      "short_name": "Elby",
-      "start_url": "./",
-      "display": "standalone",
-      "background_color": "#ffffff",
-      "theme_color": "#2563eb",
-      "icons": [
-        {
-          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>",
-          "sizes": "192x192 512x512",
-          "type": "image/svg+xml"
-        }
-      ]
-    };
-    const stringManifest = JSON.stringify(manifestData);
-    const blobManifest = new Blob([stringManifest], {type: 'application/json'});
-    const manifestUrl = URL.createObjectURL(blobManifest);
-    const linkManifest = document.createElement('link');
-    linkManifest.rel = 'manifest';
-    linkManifest.href = manifestUrl;
-    document.head.appendChild(linkManifest);
-  </script>
 </head>
 <body class="min-h-screen font-sans bg-slate-50 flex flex-col items-center pb-24">
 
@@ -84,7 +66,7 @@
         <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">
           App de Elby
         </h1>
-        <p class="text-xl font-bold text-blue-700 mt-1 flex items-center gap-1.5 bg-blue-50 px-3 py-1 rounded-xl border border-blue-200 inline-block">
+        <p class="text-lg sm:text-xl font-bold text-blue-700 mt-1 flex items-center gap-1.5 bg-blue-50 px-3 py-1 rounded-xl border border-blue-200 inline-block">
           <span>📱</span> Mi número: <span class="font-extrabold text-slate-900">9 3516 18-6364</span>
         </p>
       </div>
@@ -92,7 +74,7 @@
       <!-- BOTÓN CONFIGURACIÓN -->
       <button 
         id="openSettingsBtn"
-        onclick="openSettingsModal()"
+        onclick="triggerVibrate(); openSettingsModal();"
         class="bg-slate-100 hover:bg-slate-200 text-slate-800 border-2 border-slate-300 p-3 rounded-2xl flex flex-col items-center justify-center font-bold text-sm btn-touch-active focus:ring-4 focus:ring-slate-400"
         aria-label="Abrir configuración de contactos y carnet"
       >
@@ -101,17 +83,36 @@
       </button>
     </div>
 
-    <!-- BOTÓN BOTE/INSTALAR PWA -->
-    <div id="installPwaContainer" class="mt-4 hidden">
+    <!-- BANNER ULTRA-VISIBLE DE INSTALACIÓN PWA -->
+    <div id="installPwaContainer" class="mt-4">
       <button 
         id="installPwaBtn"
-        onclick="triggerPwaInstall()"
-        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xl py-3 px-4 rounded-2xl shadow-btn border-b-4 border-emerald-800 flex items-center justify-center gap-3 animate-pulse btn-touch-active"
-        aria-label="Instalar la aplicación en el celular"
+        onclick="triggerVibrate(); triggerPwaInstall();"
+        class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black py-3.5 px-4 rounded-2xl shadow-xl border-2 border-emerald-300 flex items-center justify-between gap-3 btn-touch-active transition-all ring-4 ring-emerald-500/20"
+        aria-label="Instalar la aplicación en el celular o computadora"
       >
-        <span class="text-3xl">📱</span>
-        <span>Instalar App en el Celular</span>
+        <div class="flex items-center gap-3 text-left">
+          <span class="text-3xl sm:text-4xl bg-white/20 p-2 rounded-xl flex items-center justify-center shrink-0 animate-bounce">
+            📲
+          </span>
+          <div>
+            <span class="text-lg sm:text-xl font-black block tracking-tight leading-tight uppercase text-white drop-shadow-sm">
+              Instalar App en el Celular
+            </span>
+            <span class="text-xs sm:text-sm font-semibold text-emerald-100 block">
+              Toca aquí para tenerla en tu pantalla de inicio
+            </span>
+          </div>
+        </div>
+        <span class="bg-white text-emerald-800 font-extrabold text-xs px-3 py-2 rounded-xl uppercase tracking-wider shrink-0 shadow">
+          Instalar ➔
+        </span>
       </button>
+
+      <!-- Mensaje cuando ya está abierta como PWA instalada -->
+      <div id="alreadyInstalledBadge" class="hidden text-center py-2 text-xs font-bold text-emerald-800 bg-emerald-100/90 rounded-xl border border-emerald-300 mt-2">
+        ✅ Aplicación instalada en pantalla de inicio
+      </div>
     </div>
   </header>
 
@@ -119,7 +120,7 @@
   <main class="w-full max-w-lg px-4 pt-6 space-y-8 flex-1">
 
     <!-- SECCIÓN 1: MI FAMILIA -->
-    <section aria-labelledby="sec-familia" class="bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-card space-y-4">
+    <section aria-labelledby="sec-familia" class="bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-card space-y-5">
       <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
         <h2 id="sec-familia" class="text-2xl font-black text-slate-900 flex items-center gap-2">
           <span>👨‍👩‍👧‍👦</span> Mi Familia <span class="text-base font-semibold text-slate-500">(Llamadas)</span>
@@ -151,7 +152,7 @@
     </section>
 
     <!-- SECCIÓN 2: SALUD Y EMERGENCIAS -->
-    <section aria-labelledby="sec-salud" class="bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-card space-y-4">
+    <section aria-labelledby="sec-salud" class="bg-white p-5 rounded-3xl border-2 border-slate-200 shadow-card space-y-5">
       <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
         <h2 id="sec-salud" class="text-2xl font-black text-slate-900 flex items-center gap-2">
           <span>🚨</span> Salud y Emergencias
@@ -160,6 +161,22 @@
           Urgencias
         </span>
       </div>
+
+      <!-- Botón especial SOS de Ubicación por WhatsApp -->
+      <button 
+        onclick="triggerVibrate(); sendSosLocation();"
+        class="w-full min-h-[64px] bg-red-700 hover:bg-red-800 text-white border-b-4 border-red-950 rounded-2xl shadow-btn flex items-center justify-between px-5 py-3 btn-touch-active"
+        title="Enviar mi ubicación por WhatsApp a mi familia"
+      >
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">📍</span>
+          <div class="text-left">
+            <span class="text-xl font-black block leading-tight">ENVIAR MI UBICACIÓN</span>
+            <span class="text-xs font-semibold text-red-100 block">Mensaje de auxilio con GPS a la familia</span>
+          </div>
+        </div>
+        <span class="text-2xl">🆘</span>
+      </button>
 
       <div id="emergenciasList" class="grid grid-cols-1 gap-4">
         <!-- Dinámico mediante JS -->
@@ -173,8 +190,8 @@
           <span>🪪</span> Mi Carnet de Salud
         </h2>
         <button 
-          onclick="openHealthEditModal()" 
-          class="bg-blue-600/80 hover:bg-blue-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl border border-blue-300 flex items-center gap-1"
+          onclick="triggerVibrate(); openHealthEditModal();" 
+          class="bg-blue-600/80 hover:bg-blue-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl border border-blue-300 flex items-center gap-1 btn-touch-active"
           aria-label="Editar información del carnet de salud"
         >
           ✏️ Editar
@@ -245,7 +262,7 @@
 
         <div>
           <label for="contactCategory" class="block text-sm font-bold text-slate-700 mb-1">Sección / Categoría:</label>
-          <select id="contactCategory" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-semibold focus:border-blue-600">
+          <select id="contactCategory" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-semibold focus:border-blue-600 bg-white">
             <option value="hijos">Hijos</option>
             <option value="hermanos">Hermanos</option>
             <option value="emergencias">Salud y Emergencias</option>
@@ -258,21 +275,22 @@
         </div>
 
         <div>
-          <label for="contactPhone" class="block text-sm font-bold text-slate-700 mb-1">Número de Teléfono (sin espacios):</label>
+          <label for="contactPhone" class="block text-sm font-bold text-slate-700 mb-1">Número de Teléfono (sin guiones):</label>
           <input type="tel" id="contactPhone" required placeholder="Ej: 107 o 3516123456" class="w-full text-lg p-3 rounded-xl border-2 border-slate-300 font-bold">
+          <p class="text-xs text-slate-500 mt-1">Para Argentina celular: 351xxxxxxx o con 9: 9351xxxxxxx</p>
         </div>
 
         <div>
           <label for="contactEmoji" class="block text-sm font-bold text-slate-700 mb-1">Emoji / Icono:</label>
-          <select id="contactEmoji" class="w-full text-xl p-3 rounded-xl border-2 border-slate-300 font-semibold">
+          <select id="contactEmoji" class="w-full text-xl p-3 rounded-xl border-2 border-slate-300 font-semibold bg-white">
             <option value="👤">👤 Perfil</option>
             <option value="📞">📞 Teléfono</option>
             <option value="👩">👩 Mujer</option>
             <option value="👨">👨 Hombre</option>
             <option value="🚑">🚑 Ambulancia</option>
             <option value="🏥">🏥 Hospital</option>
-            <option value="👨‍⚕️">👨‍⚕️ Doctor</option>
-            <option value="❤️">❤️ Corazón</option>
+            <option value="🩺">🩺 Doctor / Médico</option>
+            <option value="❤️">❤️ Corazón / Cuidado</option>
           </select>
         </div>
 
@@ -298,7 +316,7 @@
       <div class="pt-4 border-t border-slate-300">
         <button 
           onclick="restoreDefaults()" 
-          class="w-full bg-slate-200 hover:bg-red-100 hover:text-red-700 text-slate-600 font-bold text-sm py-2 rounded-xl border border-slate-300 transition"
+          class="w-full bg-slate-200 hover:bg-red-100 hover:text-red-700 text-slate-600 font-bold text-sm py-2.5 rounded-xl border border-slate-300 transition"
         >
           🔄 Restaurar botones originales
         </button>
@@ -358,16 +376,77 @@
     </form>
   </dialog>
 
+  <!-- MODAL DE AYUDA DE INSTALACIÓN PWA -->
+  <dialog id="pwaHelpModal" class="p-0 rounded-3xl backdrop:bg-slate-900/60 max-w-lg w-[92%] shadow-2xl overflow-hidden border-2 border-slate-300">
+    <div class="bg-emerald-700 text-white p-5 flex justify-between items-center">
+      <h3 class="text-2xl font-black flex items-center gap-2">
+        <span>📲</span> Cómo Instalar la App
+      </h3>
+      <button 
+        onclick="closePwaHelpModal()" 
+        class="text-white hover:bg-emerald-800 text-2xl font-black px-3 py-1 rounded-xl"
+        aria-label="Cerrar modal de instalación"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="p-5 space-y-4 bg-slate-50 max-h-[75vh] overflow-y-auto">
+      
+      <!-- Paso Android -->
+      <div class="bg-white p-4 rounded-2xl border-2 border-emerald-200 shadow-sm space-y-2">
+        <h4 class="font-black text-lg text-emerald-900 flex items-center gap-2">
+          <span>🤖</span> En Celular Android (Google Chrome):
+        </h4>
+        <ol class="list-decimal list-inside text-base text-slate-700 space-y-1 font-semibold">
+          <li>Toca los <span class="font-bold text-slate-900">tres puntitos (⋮)</span> arriba a la derecha.</li>
+          <li>Selecciona <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">"Instalar aplicación"</span> o <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">"Agregar a la pantalla principal"</span>.</li>
+          <li>Presiona <span class="font-bold text-slate-900">"Instalar"</span> y el ícono aparecerá junto a tus otras apps.</li>
+        </ol>
+      </div>
+
+      <!-- Paso iPhone -->
+      <div class="bg-white p-4 rounded-2xl border-2 border-blue-200 shadow-sm space-y-2">
+        <h4 class="font-black text-lg text-blue-900 flex items-center gap-2">
+          <span>🍏</span> En iPhone o iPad (Safari):
+        </h4>
+        <ol class="list-decimal list-inside text-base text-slate-700 space-y-1 font-semibold">
+          <li>Toca el botón <span class="font-bold text-slate-900">Compartir 📤</span> (el cuadrado con la flecha en la barra inferior).</li>
+          <li>Baja en el menú y selecciona <span class="font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">"Agregar a pantalla de inicio" ➕</span>.</li>
+          <li>Toca <span class="font-bold text-slate-900">"Agregar"</span> arriba a la derecha.</li>
+        </ol>
+      </div>
+
+      <!-- Paso Computadora -->
+      <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm space-y-2">
+        <h4 class="font-black text-lg text-slate-800 flex items-center gap-2">
+          <span>💻</span> En Computadora (Chrome o Edge):
+        </h4>
+        <p class="text-base text-slate-700 font-semibold">
+          Haz clic en el icono de instalación <span class="font-bold text-slate-900">📥</span> que aparece al final de la barra de direcciones web (arriba a la derecha).
+        </p>
+      </div>
+
+      <button 
+        type="button" 
+        onclick="closePwaHelpModal()" 
+        class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-black text-lg py-3 rounded-xl shadow-md mt-2"
+      >
+        ¡Entendido!
+      </button>
+    </div>
+  </dialog>
+
   <!-- JAVASCRIPT LÓGICA DE APLICACIÓN Y PWA -->
   <script>
     // DATOS DE CONTACTOS POR DEFECTO REQUERIDOS
     const defaultContacts = [
-      { id: '1', category: 'hijos', name: 'GABRIELA', phone: '3516186364', emoji: '👤', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
-      { id: '2', category: 'hijos', name: 'ANDRES', phone: '3516186364', emoji: '👤', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
-      { id: '3', category: 'hermanos', name: 'TATIANA', phone: '3516186364', emoji: '👤', style: 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700' },
+      { id: '1', category: 'hijos', name: 'GABRIELA', phone: '3516186364', emoji: '👩', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
+      { id: '2', category: 'hijos', name: 'ANDRES', phone: '3516186364', emoji: '👨', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
+      { id: '3', category: 'hermanos', name: 'TATIANA', phone: '3516186364', emoji: '👩', style: 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700' },
       { id: '4', category: 'emergencias', name: 'EMERGENCIAS (107)', phone: '107', emoji: '🚑', style: 'bg-red-600 text-white border-red-800 hover:bg-red-700' },
       { id: '5', category: 'emergencias', name: 'HOSPITAL ITALIANO', phone: '08005551234', emoji: '🏥', style: 'bg-indigo-600 text-white border-indigo-800 hover:bg-indigo-700' },
-      { id: '6', category: 'emergencias', name: 'MÉDICO DE CABECERA (RAUL)', phone: '3516186364', emoji: '👨‍⚕️', style: 'bg-teal-600 text-white border-teal-800 hover:bg-teal-700' }
+      { id: '6', category: 'emergencias', name: 'MÉDICO DE CABECERA (RAUL)', phone: '3516186364', emoji: '🩺', style: 'bg-teal-600 text-white border-teal-800 hover:bg-teal-700' }
     ];
 
     const defaultHealthData = {
@@ -386,13 +465,24 @@
       loadData();
       renderApp();
       setupPwaInstaller();
-      registerInlineServiceWorker();
+      registerServiceWorker();
     });
+
+    // Vibración háptica suave para accesibilidad
+    function triggerVibrate() {
+      if ('vibrate' in navigator) {
+        try { navigator.vibrate(40); } catch (e) {}
+      }
+    }
 
     function loadData() {
       const savedContacts = localStorage.getItem('elby_contacts');
       if (savedContacts) {
-        contacts = JSON.parse(savedContacts);
+        try {
+          contacts = JSON.parse(savedContacts);
+        } catch (e) {
+          contacts = [...defaultContacts];
+        }
       } else {
         contacts = [...defaultContacts];
         saveContactsToStorage();
@@ -400,7 +490,11 @@
 
       const savedHealth = localStorage.getItem('elby_health');
       if (savedHealth) {
-        healthData = JSON.parse(savedHealth);
+        try {
+          healthData = JSON.parse(savedHealth);
+        } catch (e) {
+          healthData = { ...defaultHealthData };
+        }
       } else {
         healthData = { ...defaultHealthData };
         saveHealthToStorage();
@@ -441,21 +535,21 @@
       const emergencias = contacts.filter(c => c.category === 'emergencias');
 
       if (hijos.length === 0) {
-        hijosContainer.innerHTML = '<p class="text-slate-400 italic text-center">No hay contactos añadidos.</p>';
+        hijosContainer.innerHTML = '<p class="text-slate-400 italic text-center py-2">No hay contactos añadidos.</p>';
       } else {
-        hijos.forEach(c => hijosContainer.appendChild(createCallButton(c)));
+        hijos.forEach(c => hijosContainer.appendChild(createCallCard(c)));
       }
 
       if (hermanos.length === 0) {
-        hermanosContainer.innerHTML = '<p class="text-slate-400 italic text-center">No hay contactos añadidos.</p>';
+        hermanosContainer.innerHTML = '<p class="text-slate-400 italic text-center py-2">No hay contactos añadidos.</p>';
       } else {
-        hermanos.forEach(c => hermanosContainer.appendChild(createCallButton(c)));
+        hermanos.forEach(c => hermanosContainer.appendChild(createCallCard(c)));
       }
 
       if (emergencias.length === 0) {
-        emergenciasContainer.innerHTML = '<p class="text-slate-400 italic text-center">No hay contactos añadidos.</p>';
+        emergenciasContainer.innerHTML = '<p class="text-slate-400 italic text-center py-2">No hay contactos añadidos.</p>';
       } else {
-        emergencias.forEach(c => emergenciasContainer.appendChild(createCallButton(c, true)));
+        emergencias.forEach(c => emergenciasContainer.appendChild(createCallCard(c, true)));
       }
 
       // Render Carnet de Salud
@@ -468,13 +562,31 @@
       renderSettingsList();
     }
 
-    function createCallButton(contact, isEmergency = false) {
+    // Formateador para número de WhatsApp internacional (Argentina +54 9...)
+    function formatWhatsAppNumber(phone) {
+      let clean = phone.replace(/[^0-9]/g, '');
+      if (clean.length === 10) {
+        // e.g. 3516186364 -> 5493516186364
+        return `549${clean}`;
+      } else if (clean.length === 11 && clean.startsWith('9')) {
+        // e.g. 93516186364 -> 549...
+        return `54${clean}`;
+      } else if (clean.startsWith('54')) {
+        return clean;
+      }
+      return clean;
+    }
+
+    function createCallCard(contact, isEmergency = false) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex items-stretch gap-2 w-full';
+
+      // Botón principal de llamada
       const a = document.createElement('a');
       a.href = `tel:${contact.phone}`;
+      a.onclick = triggerVibrate;
       
-      // Estilos accesibles con Tailwind: Botones grandes, texto clarísimo, touch target enorme (>64px)
-      let baseStyle = "w-full min-h-[76px] rounded-2xl border-b-4 shadow-btn font-extrabold flex items-center justify-between px-5 py-4 transition-all duration-150 btn-touch-active focus:ring-4 focus:ring-blue-500 text-left cursor-pointer text-slate-900";
-      
+      let baseStyle = "flex-1 min-h-[76px] rounded-2xl border-b-4 shadow-btn font-extrabold flex items-center justify-between px-5 py-4 transition-all duration-150 btn-touch-active focus:ring-4 focus:ring-blue-500 text-left cursor-pointer";
       let colorClasses = contact.style || "bg-blue-600 text-white border-blue-800 hover:bg-blue-700";
 
       if (isEmergency && contact.phone === '107') {
@@ -497,7 +609,54 @@
         <span class="text-3xl shrink-0">📞</span>
       `;
 
-      return a;
+      wrapper.appendChild(a);
+
+      // Botón complementario de WhatsApp si es número de celular (>= 8 dígitos)
+      const cleanDigits = contact.phone.replace(/[^0-9]/g, '');
+      if (cleanDigits.length >= 8 && contact.phone !== '107' && !contact.phone.startsWith('0800')) {
+        const waLink = document.createElement('a');
+        const waNum = formatWhatsAppNumber(contact.phone);
+        waLink.href = `https://wa.me/${waNum}?text=Hola%20${encodeURIComponent(contact.name)}`;
+        waLink.target = '_blank';
+        waLink.rel = 'noopener noreferrer';
+        waLink.onclick = triggerVibrate;
+        waLink.className = 'w-[68px] min-h-[76px] bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl border-b-4 border-emerald-700 shadow-btn flex flex-col items-center justify-center btn-touch-active shrink-0';
+        waLink.setAttribute('aria-label', `Enviar WhatsApp a ${contact.name}`);
+        waLink.innerHTML = `
+          <span class="text-2xl">💬</span>
+          <span class="text-[10px] font-black uppercase mt-0.5">Wsp</span>
+        `;
+        wrapper.appendChild(waLink);
+      }
+
+      return wrapper;
+    }
+
+    // ENVIAR UBICACIÓN POR WHATSAPP (SOS)
+    function sendSosLocation() {
+      // Buscar el primer contacto de familia disponible (ej. Gabriela o Andres)
+      const familyContact = contacts.find(c => c.category === 'hijos' || c.category === 'hermanos');
+      const targetPhone = familyContact ? formatWhatsAppNumber(familyContact.phone) : '5493516186364';
+
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
+            const message = encodeURIComponent(`🚨 ¡HOLA! Necesito ayuda. Esta es mi ubicación actual en el mapa: ${mapsUrl}`);
+            window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
+          },
+          (error) => {
+            const message = encodeURIComponent(`🚨 ¡HOLA! Necesito ayuda urgente, por favor comunícate conmigo.`);
+            window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
+          },
+          { enableHighAccuracy: true, timeout: 7000 }
+        );
+      } else {
+        const message = encodeURIComponent(`🚨 ¡HOLA! Necesito ayuda urgente, por favor comunícate conmigo.`);
+        window.location.href = `https://wa.me/${targetPhone}?text=${message}`;
+      }
     }
 
     // MODAL DE AJUSTES Y LISTADO PARA EDITAR/ELIMINAR
@@ -547,25 +706,32 @@
       const phone = document.getElementById('contactPhone').value.trim();
       const emoji = document.getElementById('contactEmoji').value;
 
+      let defaultStyle = 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700';
+      if (category === 'hermanos') defaultStyle = 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700';
+      if (category === 'emergencias') defaultStyle = 'bg-indigo-600 text-white border-indigo-800 hover:bg-indigo-700';
+
       if (id) {
         // Editar existente
         const index = contacts.findIndex(c => c.id === id);
         if (index !== -1) {
-          contacts[index] = { ...contacts[index], category, name, phone, emoji };
+          contacts[index] = { 
+            ...contacts[index], 
+            category, 
+            name, 
+            phone, 
+            emoji,
+            style: contacts[index].style || defaultStyle
+          };
         }
       } else {
         // Crear nuevo
-        let style = 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700';
-        if (category === 'hermanos') style = 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700';
-        if (category === 'emergencias') style = 'bg-indigo-600 text-white border-indigo-800 hover:bg-indigo-700';
-
         const newContact = {
           id: Date.now().toString(),
           category,
           name,
           phone,
           emoji,
-          style
+          style: defaultStyle
         };
         contacts.push(newContact);
       }
@@ -586,6 +752,7 @@
       document.getElementById('contactEmoji').value = contact.emoji || '👤';
 
       document.querySelector('#addContactForm h4').innerHTML = '✏️ Modificar Botón';
+      document.getElementById('addContactForm').scrollIntoView({ behavior: 'smooth' });
     }
 
     function deleteContact(id) {
@@ -636,6 +803,15 @@
     let deferredPrompt;
 
     function setupPwaInstaller() {
+      // Detectar si la app ya está abierta como PWA instalada
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (isStandalone) {
+        const btn = document.getElementById('installPwaBtn');
+        const badge = document.getElementById('alreadyInstalledBadge');
+        if (btn) btn.classList.add('hidden');
+        if (badge) badge.classList.remove('hidden');
+      }
+
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
@@ -644,8 +820,10 @@
       });
 
       window.addEventListener('appinstalled', () => {
-        const container = document.getElementById('installPwaContainer');
-        if (container) container.classList.add('hidden');
+        const btn = document.getElementById('installPwaBtn');
+        const badge = document.getElementById('alreadyInstalledBadge');
+        if (btn) btn.classList.add('hidden');
+        if (badge) badge.classList.remove('hidden');
         console.log('PWA instalada correctamente');
       });
     }
@@ -658,37 +836,28 @@
             console.log('El usuario aceptó instalar la PWA');
           }
           deferredPrompt = null;
-          document.getElementById('installPwaContainer').classList.add('hidden');
         });
       } else {
-        alert('Para instalar en tu celular:\n- En Android (Chrome): Toca los 3 puntos superiores y selecciona "Instalar aplicación" o "Agregar a la pantalla principal".\n- En iPhone (Safari): Toca el botón Compartir y elige "Agregar al inicio".');
+        openPwaHelpModal();
       }
     }
 
-    // REGISTRO DE SERVICE WORKER INLINE
-    function registerInlineServiceWorker() {
-      if ('serviceWorker' in navigator) {
-        const swCode = `
-          const CACHE_NAME = 'elby-pwa-v1';
-          self.addEventListener('install', (e) => {
-            e.waitUntil(
-              caches.open(CACHE_NAME).then((cache) => {
-                return cache.addAll(['./']);
-              })
-            );
-          });
-          self.addEventListener('fetch', (e) => {
-            e.respondWith(
-              caches.match(e.request).then((res) => res || fetch(e.request))
-            );
-          });
-        `;
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(blob);
+    function openPwaHelpModal() {
+      const modal = document.getElementById('pwaHelpModal');
+      if (modal) modal.showModal();
+    }
 
-        navigator.serviceWorker.register(swUrl)
-          .then(reg => console.log('Service Worker registrado:', reg.scope))
-          .catch(err => console.error('Error registrando Service Worker:', err));
+    function closePwaHelpModal() {
+      const modal = document.getElementById('pwaHelpModal');
+      if (modal) modal.close();
+    }
+
+    // REGISTRO DE SERVICE WORKER REAL
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(reg => console.log('Service Worker registrado con éxito:', reg.scope))
+          .catch(err => console.error('Error al registrar Service Worker:', err));
       }
     }
   </script>

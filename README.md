@@ -1,89 +1,92 @@
-# 📱 App de Elby - Aplicación de Llamadas Rápidas y Salud
+# 👵📱 App para la Abuela (App de Elby)
 
-Una aplicación web progresiva (**PWA**) diseñada especialmente para personas mayores o con dificultades visuales/motoras (pensada con amor para la abuela Elby). Facilita la comunicación inmediata con familiares y servicios de emergencia mediante botones de llamada gigantes de un solo toque, e integra una ficha médica de emergencia siempre accesible.
+> **Aplicación Web Progresiva (PWA) de alta accesibilidad diseñada para que adultos mayores puedan realizar llamadas rápidas a familiares, contactar a servicios de emergencia y portar su carnet médico digital de forma sencilla e intuitiva.**
+
+![PWA Ready](https://img.shields.io/badge/PWA-Ready-2563eb?style=for-the-badge&logo=pwa&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Offline Support](https://img.shields.io/badge/Offline-100%25-success?style=for-the-badge)
+
+---
+
+## 🎯 ¿Qué es esta aplicación?
+
+Muchos adultos mayores encuentran dificultades con las interfaces sobrecargadas de los teléfonos modernos, agendas llenas de contactos o teclados pequeños.
+
+**App para la Abuela** resuelve esto ofreciendo una pantalla limpia, con botones táctiles gigantes, tipografía ultralegible, contrastes altos y respuesta háptica (vibración) pensada para la máxima facilidad de uso diario y situaciones de urgencia.
 
 ---
 
 ## ✨ Características Principales
 
-- 📞 **Llamadas Rápidas con un Solo Toque**:
-  - Botones extra grandes con nombres legibles, íconos y contraste optimizado.
-  - Clasificación organizada en **Hijos**, **Hermanos/as** y **Salud y Emergencias**.
-  - Sin menús complicados: tocar el botón inicia la llamada telefónica inmediatamente (`tel:XXXXX`).
-- 🚨 **Acceso Directo a Urgencias**:
-  - Botón destacado para Emergencias Médicas (**107**).
-  - Accesos directos a Hospitales o Médicos de cabecera.
-- 🪪 **Carnet / Ficha de Salud Digital**:
-  - Tarjeta de credencial médica visible en pantalla con:
-    - **Obra Social / Prepaga** (ej: PAMI / OSECAC).
-    - **DNI**.
-    - **Grupo y Factor Sanguíneo** (ej: O+).
-    - **Alergias Conocidas** (ej: Penicilina).
-    - **Información Médica / Medicación Diaria** (ej: dosis y horarios de medicamentos).
-- ⚙️ **Panel de Configuración Integrado**:
-  - Permite a familiares añadir nuevos contactos, modificar nombres o teléfonos, cambiar emojis y eliminar botones desde el menú de ajustes.
-  - Edición directa de la información del carnet de salud sin necesidad de modificar código.
-  - Opción para restaurar los contactos y datos predeterminados en cualquier momento.
-- 💾 **Persistencia de Datos Local**:
-  - Toda la configuración se guarda en el dispositivo mediante `localStorage`. No requiere servidores externos ni bases de datos complejas.
-- 📲 **Instalable como App (PWA)**:
-  - Incluye manifiesto y Service Worker dinámico.
-  - Se puede instalar en la pantalla de inicio de teléfonos Android (Chrome) o iPhone/iOS (Safari) para verse y sentirse como una app nativa, funcionando incluso sin conexión a internet.
-- 👁️ **Diseño de Alta Accesibilidad**:
-  - Tipografía clara (*Outfit / Inter*) con tamaños de letra grandes.
-  - Alto contraste de colores (fondo claro, textos oscuros y botones coloridos bien diferenciados).
-  - Indicadores visuales de foco para facilitar la navegación táctil o asistida.
+### 1. 📞 Llamadas Rápidas con 1 Toque
+- Botones de gran tamaño (más de 76px de altura) fáciles de presionar.
+- Organizados claramente por categorías: **Hijos**, **Hermanos/as** y **Salud y Emergencias**.
+- Lanza llamadas directas (`tel:`) sin pasar por menús confusos.
+
+### 2. 💬 Acceso Directo a WhatsApp
+- Cada familiar cuenta con un botón verde dedicado de WhatsApp que abre una conversación directa formateada para números de Argentina (`+54 9 ...`).
+
+### 3. 🚨 Botón SOS: Enviar Ubicación por WhatsApp
+- En caso de emergencia o desorientación, el botón **"ENVIAR MI UBICACIÓN"** obtiene las coordenadas GPS actuales del teléfono y genera un mensaje de auxilio con el enlace a Google Maps listo para enviar a la familia.
+
+### 4. 🪪 Carnet Médico y de Obra Social Digital
+- Tarjeta visual con los datos indispensables para visitas médicas o guardias:
+  - **Obra Social / Prepaga**: (PAMI / OSECAC)
+  - **DNI**
+  - **Grupo y Factor Sanguíneo**
+  - **Alergias**
+  - **Información médica y medicamentos**
+- Todos los datos son editables desde la propia aplicación.
+
+### 5. ⚙️ Administración y Ajustes
+- Permite añadir nuevos contactos, modificar nombres/números/iconos o eliminarlos.
+- Los datos se guardan de forma permanente en el dispositivo (`localStorage`).
+- Botón de restauración para volver a los valores predeterminados en cualquier momento.
+
+### 6. 📱 PWA Instalable y Funcionamiento Offline
+- Se instala como una aplicación nativa en la pantalla principal del celular (Android y iPhone) sin requerir descarga desde tiendas de apps.
+- Incluye un **Service Worker** (`sw.js`) que almacena en caché la interfaz y recursos para que funcione incluso sin datos móviles ni conexión WiFi.
 
 ---
 
-## 🚀 Cómo Usar la Aplicación
-
-### Opción 1: Abrir localmente en cualquier navegador
-1. Descarga o clona este repositorio:
-   ```bash
-   git clone https://github.com/emigraci/app-para-la-abuela.git
-   ```
-2. Abre el archivo `index.html` (o `App_de_Elby.html`) en tu navegador favorito (Chrome, Edge, Safari, Firefox).
-
-### Opción 2: Usar desde el celular e instalar en la pantalla de inicio
-1. Abre el enlace de la aplicación en el navegador del teléfono.
-2. Para instalarla como acceso directo:
-   - **En Android (Google Chrome)**: Toca los tres puntos de la esquina superior derecha y selecciona **"Instalar aplicación"** o **"Agregar a la pantalla principal"**.
-   - **En iPhone (Safari)**: Toca el botón de compartir (el cuadrado con la flecha hacia arriba) y selecciona **"Agregar a pantalla de inicio"**.
-3. ¡Listo! La app aparecerá con su ícono en el celular para un acceso inmediato.
-
----
-
-## 🛠️ Configuración y Personalización
-
-1. Presiona el botón **⚙️ Ajustes** en la esquina superior derecha.
-2. Para agregar o modificar un contacto:
-   - Selecciona la categoría (*Hijos*, *Hermanos* o *Salud y Emergencias*).
-   - Escribe el nombre y el número de teléfono.
-   - Elige un ícono representativo y presiona **💾 Guardar Botón**.
-3. Para editar la credencial médica, presiona el botón **✏️ Editar** en la sección *Mi Carnet de Salud*.
-
----
-
-## 💻 Tecnologías Utilizadas
-
-- **HTML5 Semántico**: Estructura accesible y ligera.
-- **Tailwind CSS**: Estilizado moderno, responsivo y de alto contraste.
-- **JavaScript (Vanilla)**: Lógica reactiva para modales, almacenamiento y renderizado sin dependencias pesadas.
-- **PWA (Progressive Web App)**: Web App Manifest dinámico y Service Worker para soporte offline e instalación.
-- **LocalStorage API**: Almacenamiento seguro en el propio dispositivo del usuario.
-
----
-
-## 📁 Estructura del Proyecto
+## 📂 Archivos del Proyecto
 
 ```text
 app-para-la-abuela/
-├── App_de_Elby.html   # Archivo principal de la aplicación
-├── index.html         # Punto de entrada estándar para publicación web y GitHub Pages
-└── README.md          # Documentación y descripción del proyecto
+├── index.html       # Interfaz de usuario, componentes y lógica JavaScript
+├── manifest.json    # Manifiesto de la PWA (nombre, colores, modo standalone)
+├── sw.js            # Service Worker para funcionamiento offline y caché
+├── icon-192.svg     # Ícono vectorial de alta definición (192x192)
+├── icon-512.svg     # Ícono vectorial de alta definición (512x512)
+└── README.md        # Documentación oficial del repositorio
 ```
 
 ---
 
-❤️ *Creado con cariño para cuidar y mantener siempre conectada a la abuela.*
+## 🚀 Cómo Usarla e Instalarla en el Celular
+
+### 1. Activar en GitHub Pages (Recomendado)
+Al tener este repositorio en GitHub, puedes habilitar **GitHub Pages** para tener la app publicada con enlace HTTPS gratis:
+
+1. En este repositorio, ve a la pestaña **Settings** (Configuración).
+2. En el menú lateral izquierdo, haz clic en **Pages**.
+3. En **Branch** (Rama), selecciona `main` y la carpeta `/ (root)`.
+4. Haz clic en **Save** (Guardar).
+5. En unos segundos, GitHub te proporcionará una URL pública similar a:
+   ```text
+   https://emigraci.github.io/app-para-la-abuela/
+   ```
+
+### 2. Instalar en el teléfono de la abuela:
+- **En Android (Chrome)**: Abre el enlace anterior. Aparecerá el botón verde **"Instalar App en el Celular"** en la parte superior. Si no, pulsa los 3 puntos arriba a la derecha y selecciona **"Instalar aplicación"** o **"Agregar a la pantalla principal"**.
+- **En iPhone (Safari)**: Abre el enlace, toca el botón **Compartir** (icono de cuadro con flecha hacia arriba) y elige **"Agregar al inicio"**.
+
+¡Listo! La aplicación tendrá su propio ícono en la pantalla de inicio y se abrirá a pantalla completa.
+
+---
+
+## 💻 Ejecutar Localmente en PC
+
+1. Descarga o clona este repositorio.
+2. Abre el archivo `index.html` en cualquier navegador moderno (Google Chrome, Microsoft Edge, Mozilla Firefox, Safari).
