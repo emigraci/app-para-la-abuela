@@ -442,7 +442,7 @@
     // DATOS DE CONTACTOS POR DEFECTO REQUERIDOS
     const defaultContacts = [
       { id: '1', category: 'hijos', name: 'GABRIELA', phone: '9 351 529-6224', emoji: '👩', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
-      { id: '2', category: 'hijos', name: 'ANDRES', phone: '3516186364', emoji: '👨', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
+      { id: '2', category: 'hijos', name: 'ANDRES', phone: '9 351 532-19991', emoji: '👨', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
       { id: '3', category: 'hermanos', name: 'TATIANA', phone: '3516186364', emoji: '👩', style: 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700' },
       { id: '4', category: 'emergencias', name: 'EMERGENCIAS (107)', phone: '107', emoji: '🚑', style: 'bg-red-600 text-white border-red-800 hover:bg-red-700' },
       { id: '5', category: 'emergencias', name: 'HOSPITAL ITALIANO', phone: '08005551234', emoji: '🏥', style: 'bg-indigo-600 text-white border-indigo-800 hover:bg-indigo-700' },
@@ -484,6 +484,12 @@
           const gabi = contacts.find(c => c.name === 'GABRIELA');
           if (gabi && (gabi.phone === '3516186364' || !gabi.phone.includes('529'))) {
             gabi.phone = '9 351 529-6224';
+            saveContactsToStorage();
+          }
+          // Migración automática si Andrés tenía el número por defecto anterior
+          const andres = contacts.find(c => c.name === 'ANDRES');
+          if (andres && (andres.phone === '3516186364' || !andres.phone.includes('532'))) {
+            andres.phone = '9 351 532-19991';
             saveContactsToStorage();
           }
         } catch (e) {
@@ -574,8 +580,8 @@
       if (clean.length === 10) {
         // e.g. 3516186364 -> 5493516186364
         return `549${clean}`;
-      } else if (clean.length === 11 && clean.startsWith('9')) {
-        // e.g. 93516186364 -> 549...
+      } else if (clean.length >= 11 && clean.startsWith('9')) {
+        // e.g. 9351... -> 549351...
         return `54${clean}`;
       } else if (clean.startsWith('54')) {
         return clean;
