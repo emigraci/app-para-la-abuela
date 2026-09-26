@@ -1,5 +1,5 @@
 // Nombre y versión de la caché
-const CACHE_NAME = 'elby-cache-v1';
+const CACHE_NAME = 'elby-cache-v3';
 
 // Archivos estáticos esenciales para funcionamiento offline (App Shell)
 const STATIC_ASSETS = [

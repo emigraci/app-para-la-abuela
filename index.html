@@ -281,17 +281,91 @@
         </div>
 
         <div>
-          <label for="contactEmoji" class="block text-sm font-bold text-slate-700 mb-1">Emoji / Icono:</label>
+          <label for="contactEmoji" class="block text-sm font-bold text-slate-700 mb-1">Emoji / Icono alternativo:</label>
           <select id="contactEmoji" class="w-full text-xl p-3 rounded-xl border-2 border-slate-300 font-semibold bg-white">
             <option value="👤">👤 Perfil</option>
             <option value="📞">📞 Teléfono</option>
             <option value="👩">👩 Mujer</option>
             <option value="👨">👨 Hombre</option>
+            <option value="👵">👵 Abuela</option>
+            <option value="👴">👴 Abuelo</option>
+            <option value="👧">👧 Niña / Nieta</option>
+            <option value="👦">👦 Niño / Nieto</option>
             <option value="🚑">🚑 Ambulancia</option>
             <option value="🏥">🏥 Hospital</option>
             <option value="🩺">🩺 Doctor / Médico</option>
             <option value="❤️">❤️ Corazón / Cuidado</option>
           </select>
+        </div>
+
+        <!-- FOTO DEL FAMILIAR: SUBIR DESDE CELULAR O DESCARGAR POR URL -->
+        <div class="bg-blue-50/70 p-3.5 rounded-2xl border-2 border-blue-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-sm font-black text-blue-950 flex items-center gap-1.5">
+              <span>📸</span> Foto del Familiar:
+            </label>
+            <span class="text-[11px] font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">Recomendado</span>
+          </div>
+
+          <!-- Previsualización -->
+          <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-blue-200">
+            <div class="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden bg-slate-100 shrink-0">
+              <img id="photoPreviewImg" src="" alt="Previsualización" class="w-full h-full object-cover hidden">
+              <span id="photoPreviewPlaceholder" class="text-xs text-slate-400 font-bold text-center px-1">Sin foto</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-slate-700 leading-tight">La foto aparecerá en grande en el botón de llamada para fácil identificación.</p>
+              <button 
+                type="button" 
+                id="removePhotoBtn" 
+                onclick="removePhoto()" 
+                class="hidden mt-1.5 text-xs text-red-600 hover:text-red-800 font-black flex items-center gap-1 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg border border-red-200"
+              >
+                <span>🗑️</span> Quitar foto
+              </button>
+            </div>
+          </div>
+
+          <input type="hidden" id="contactPhoto" value="">
+
+          <!-- Opción 1: Subir desde Galería / Cámara / PC -->
+          <div>
+            <input 
+              type="file" 
+              id="contactPhotoFile" 
+              accept="image/*" 
+              class="hidden" 
+              onchange="handlePhotoUpload(event)"
+            >
+            <button 
+              type="button" 
+              onclick="document.getElementById('contactPhotoFile').click()" 
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm py-2.5 px-3 rounded-xl shadow flex items-center justify-center gap-2 btn-touch-active"
+            >
+              <span>📁</span> Elegir foto de la galería o cámara
+            </button>
+          </div>
+
+          <!-- Opción 2: Descargar desde enlace / URL web -->
+          <div class="space-y-1.5 pt-1 border-t border-blue-200">
+            <span class="text-xs font-bold text-slate-600 block">O descargar imagen desde enlace web (URL):</span>
+            <div class="flex gap-1.5">
+              <input 
+                type="url" 
+                id="contactPhotoUrl" 
+                placeholder="https://ejemplo.com/foto.jpg" 
+                class="flex-1 text-xs sm:text-sm p-2 rounded-xl border border-slate-300 font-medium focus:border-blue-600 bg-white"
+              >
+              <button 
+                type="button" 
+                onclick="downloadPhotoFromUrl()" 
+                class="bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs px-3 py-2 rounded-xl shadow btn-touch-active shrink-0 flex items-center gap-1"
+              >
+                <span>📥</span> Descargar
+              </button>
+            </div>
+            <p id="photoStatusMsg" class="text-xs font-bold text-blue-700 min-h-[16px]"></p>
+          </div>
         </div>
 
         <div class="flex gap-2 pt-2">
@@ -441,12 +515,12 @@
   <script>
     // DATOS DE CONTACTOS POR DEFECTO REQUERIDOS
     const defaultContacts = [
-      { id: '1', category: 'hijos', name: 'GABRIELA', phone: '9 351 529-6224', emoji: '👩', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
-      { id: '2', category: 'hijos', name: 'ANDRES', phone: '9 351 532-19991', emoji: '👨', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
-      { id: '3', category: 'hermanos', name: 'TATIANA', phone: '3516186364', emoji: '👩', style: 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700' },
-      { id: '4', category: 'emergencias', name: 'EMERGENCIAS (107)', phone: '107', emoji: '🚑', style: 'bg-red-600 text-white border-red-800 hover:bg-red-700' },
-      { id: '5', category: 'emergencias', name: 'HOSPITAL ITALIANO', phone: '08005551234', emoji: '🏥', style: 'bg-indigo-600 text-white border-indigo-800 hover:bg-indigo-700' },
-      { id: '6', category: 'emergencias', name: 'MÉDICO DE CABECERA (RAUL)', phone: '3516186364', emoji: '🩺', style: 'bg-teal-600 text-white border-teal-800 hover:bg-teal-700' }
+      { id: '1', category: 'hijos', name: 'GABRIELA', phone: '9 351 529-6224', emoji: '👩', photo: '', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
+      { id: '2', category: 'hijos', name: 'ANDRES', phone: '9 351 532-19991', emoji: '👨', photo: '', style: 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700' },
+      { id: '3', category: 'hermanos', name: 'TATIANA', phone: '3516186364', emoji: '👩', photo: '', style: 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700' },
+      { id: '4', category: 'emergencias', name: 'EMERGENCIAS (107)', phone: '107', emoji: '🚑', photo: '', style: 'bg-red-600 text-white border-red-900 hover:bg-red-700' },
+      { id: '5', category: 'emergencias', name: 'HOSPITAL ITALIANO', phone: '08005551234', emoji: '🏥', photo: '', style: 'bg-indigo-600 text-white border-indigo-800 hover:bg-indigo-700' },
+      { id: '6', category: 'emergencias', name: 'MÉDICO DE CABECERA (RAUL)', phone: '3516186364', emoji: '🩺', photo: '', style: 'bg-teal-600 text-white border-teal-800 hover:bg-teal-700' }
     ];
 
     const defaultHealthData = {
@@ -599,7 +673,7 @@
       a.href = `tel:${cleanPhone}`;
       a.onclick = triggerVibrate;
       
-      let baseStyle = "flex-1 min-h-[76px] rounded-2xl border-b-4 shadow-btn font-extrabold flex items-center justify-between px-5 py-4 transition-all duration-150 btn-touch-active focus:ring-4 focus:ring-blue-500 text-left cursor-pointer";
+      let baseStyle = "flex-1 min-h-[84px] rounded-2xl border-b-4 shadow-btn font-extrabold flex items-center justify-between px-4 sm:px-5 py-3 transition-all duration-150 btn-touch-active focus:ring-4 focus:ring-blue-500 text-left cursor-pointer";
       let colorClasses = contact.style || "bg-blue-600 text-white border-blue-800 hover:bg-blue-700";
 
       if (isEmergency && contact.phone === '107') {
@@ -609,17 +683,36 @@
       a.className = `${baseStyle} ${colorClasses}`;
       a.setAttribute('aria-label', `Llamar a ${contact.name}`);
 
-      a.innerHTML = `
-        <div class="flex items-center gap-4">
-          <span class="text-4xl bg-white/20 p-2 rounded-xl flex items-center justify-center shrink-0">
+      // Visualización: Foto del familiar o emoji
+      let visualHtml = '';
+      if (contact.photo) {
+        visualHtml = `
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shrink-0 border-2 border-white/90 shadow-md bg-white/20 flex items-center justify-center">
+            <img 
+              src="${contact.photo}" 
+              alt="${contact.name}" 
+              class="w-full h-full object-cover"
+              onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-4xl flex items-center justify-center w-full h-full\\'>${contact.emoji || '👤'}</span>';"
+            >
+          </div>
+        `;
+      } else {
+        visualHtml = `
+          <span class="text-4xl bg-white/20 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center shrink-0">
             ${contact.emoji || '👤'}
           </span>
-          <div>
-            <span class="text-2xl font-black block tracking-tight leading-tight">${contact.name}</span>
-            <span class="text-sm font-semibold opacity-90 block">Llamar: ${contact.phone}</span>
+        `;
+      }
+
+      a.innerHTML = `
+        <div class="flex items-center gap-3.5 sm:gap-4 overflow-hidden">
+          ${visualHtml}
+          <div class="truncate">
+            <span class="text-2xl sm:text-3xl font-black block tracking-tight leading-tight truncate">${contact.name}</span>
+            <span class="text-sm font-semibold opacity-90 block truncate">Llamar: ${contact.phone}</span>
           </div>
         </div>
-        <span class="text-3xl shrink-0">📞</span>
+        <span class="text-3xl sm:text-4xl shrink-0 ml-1">📞</span>
       `;
 
       wrapper.appendChild(a);
@@ -633,11 +726,11 @@
         waLink.target = '_blank';
         waLink.rel = 'noopener noreferrer';
         waLink.onclick = triggerVibrate;
-        waLink.className = 'w-[68px] min-h-[76px] bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl border-b-4 border-emerald-700 shadow-btn flex flex-col items-center justify-center btn-touch-active shrink-0';
+        waLink.className = 'w-[68px] sm:w-[76px] min-h-[84px] bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl border-b-4 border-emerald-700 shadow-btn flex flex-col items-center justify-center btn-touch-active shrink-0';
         waLink.setAttribute('aria-label', `Enviar WhatsApp a ${contact.name}`);
         waLink.innerHTML = `
-          <span class="text-2xl">💬</span>
-          <span class="text-[10px] font-black uppercase mt-0.5">Wsp</span>
+          <span class="text-2xl sm:text-3xl">💬</span>
+          <span class="text-[10px] sm:text-xs font-black uppercase mt-0.5">Wsp</span>
         `;
         wrapper.appendChild(waLink);
       }
@@ -690,9 +783,17 @@
       contacts.forEach(c => {
         const div = document.createElement('div');
         div.className = 'bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-2 shadow-sm';
+        
+        let visualThumb = '';
+        if (c.photo) {
+          visualThumb = `<img src="${c.photo}" alt="${c.name}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 shrink-0">`;
+        } else {
+          visualThumb = `<span class="text-2xl w-11 h-11 bg-slate-100 rounded-xl flex items-center justify-center shrink-0">${c.emoji || '👤'}</span>`;
+        }
+
         div.innerHTML = `
-          <div class="flex items-center gap-2 overflow-hidden">
-            <span class="text-2xl">${c.emoji}</span>
+          <div class="flex items-center gap-2.5 overflow-hidden">
+            ${visualThumb}
             <div class="truncate">
               <p class="font-bold text-slate-900 text-base truncate">${c.name}</p>
               <p class="text-xs font-semibold text-slate-500">${c.phone} • <span class="uppercase">${c.category}</span></p>
@@ -711,6 +812,153 @@
       });
     }
 
+    // MANEJO DE FOTO DEL FAMILIAR: SUBIDA Y COMPRESIÓN LOCAL
+    function processImageFile(file) {
+      return new Promise((resolve, reject) => {
+        if (!file || !file.type.startsWith('image/')) {
+          return reject(new Error('Archivo no es una imagen válida'));
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          compressImageDataUrl(e.target.result)
+            .then(resolve)
+            .catch(reject);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function compressImageDataUrl(dataUrl) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            const maxDim = 200; // 200x200 px para ultra-ligereza (<20KB) y nitidez
+            const width = img.width;
+            const height = img.height;
+
+            // Recorte cuadrado centrado para no deformar caras
+            const minDim = Math.min(width, height);
+            const startX = (width - minDim) / 2;
+            const startY = (height - minDim) / 2;
+
+            canvas.width = maxDim;
+            canvas.height = maxDim;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, maxDim, maxDim);
+
+            const compressed = canvas.toDataURL('image/jpeg', 0.82);
+            resolve(compressed);
+          } catch (err) {
+            reject(err);
+          }
+        };
+        img.onerror = () => reject(new Error('No se pudo cargar la imagen'));
+        img.src = dataUrl;
+      });
+    }
+
+    async function handlePhotoUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('photoStatusMsg');
+      if (statusEl) statusEl.textContent = '⏳ Optimizando foto...';
+
+      try {
+        const compressed = await processImageFile(file);
+        setPhotoPreview(compressed);
+        if (statusEl) statusEl.textContent = '✅ Foto cargada correctamente.';
+      } catch (err) {
+        console.error('Error al procesar la foto:', err);
+        if (statusEl) statusEl.textContent = '❌ No se pudo procesar la foto seleccionada.';
+      }
+    }
+
+    function downloadPhotoFromUrl() {
+      const urlInput = document.getElementById('contactPhotoUrl');
+      const url = urlInput.value.trim();
+      const statusEl = document.getElementById('photoStatusMsg');
+
+      if (!url) {
+        if (statusEl) statusEl.textContent = '⚠️ Escribe o pega una dirección web de imagen.';
+        return;
+      }
+
+      if (statusEl) statusEl.textContent = '⏳ Descargando imagen...';
+
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const maxDim = 200;
+          const width = img.width;
+          const height = img.height;
+          const minDim = Math.min(width, height);
+          const startX = (width - minDim) / 2;
+          const startY = (height - minDim) / 2;
+
+          canvas.width = maxDim;
+          canvas.height = maxDim;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, maxDim, maxDim);
+
+          const compressed = canvas.toDataURL('image/jpeg', 0.82);
+          setPhotoPreview(compressed);
+          if (statusEl) statusEl.textContent = '✅ Imagen descargada y optimizada para uso sin internet.';
+          urlInput.value = '';
+        } catch (e) {
+          // Si el servidor bloquea CORS en canvas, guardamos la URL directamente como fallback
+          console.warn('CORS restringido en Canvas, utilizando URL directa:', e);
+          setPhotoPreview(url);
+          if (statusEl) statusEl.textContent = '✅ Enlace guardado correctamente.';
+          urlInput.value = '';
+        }
+      };
+      img.onerror = () => {
+        if (statusEl) statusEl.textContent = '❌ No se pudo descargar. Verifica que sea un enlace directo a una imagen.';
+      };
+      img.src = url;
+    }
+
+    function setPhotoPreview(photoDataUrl) {
+      const hiddenInput = document.getElementById('contactPhoto');
+      if (hiddenInput) hiddenInput.value = photoDataUrl || '';
+
+      const previewImg = document.getElementById('photoPreviewImg');
+      const previewPlaceholder = document.getElementById('photoPreviewPlaceholder');
+      const removeBtn = document.getElementById('removePhotoBtn');
+
+      if (photoDataUrl) {
+        if (previewImg) {
+          previewImg.src = photoDataUrl;
+          previewImg.classList.remove('hidden');
+        }
+        if (previewPlaceholder) previewPlaceholder.classList.add('hidden');
+        if (removeBtn) removeBtn.classList.remove('hidden');
+      } else {
+        if (previewImg) {
+          previewImg.src = '';
+          previewImg.classList.add('hidden');
+        }
+        if (previewPlaceholder) previewPlaceholder.classList.remove('hidden');
+        if (removeBtn) removeBtn.classList.add('hidden');
+      }
+    }
+
+    function removePhoto() {
+      setPhotoPreview('');
+      const fileInput = document.getElementById('contactPhotoFile');
+      if (fileInput) fileInput.value = '';
+      const urlInput = document.getElementById('contactPhotoUrl');
+      if (urlInput) urlInput.value = '';
+      const statusEl = document.getElementById('photoStatusMsg');
+      if (statusEl) statusEl.textContent = '';
+    }
+
     function handleSaveContact(e) {
       e.preventDefault();
       const id = document.getElementById('editContactId').value;
@@ -718,6 +966,7 @@
       const name = document.getElementById('contactName').value.trim().toUpperCase();
       const phone = document.getElementById('contactPhone').value.trim();
       const emoji = document.getElementById('contactEmoji').value;
+      const photo = document.getElementById('contactPhoto').value.trim();
 
       let defaultStyle = 'bg-emerald-600 text-white border-emerald-800 hover:bg-emerald-700';
       if (category === 'hermanos') defaultStyle = 'bg-blue-600 text-white border-blue-800 hover:bg-blue-700';
@@ -733,6 +982,7 @@
             name, 
             phone, 
             emoji,
+            photo,
             style: contacts[index].style || defaultStyle
           };
         }
@@ -744,6 +994,7 @@
           name,
           phone,
           emoji,
+          photo,
           style: defaultStyle
         };
         contacts.push(newContact);
@@ -763,6 +1014,7 @@
       document.getElementById('contactName').value = contact.name;
       document.getElementById('contactPhone').value = contact.phone;
       document.getElementById('contactEmoji').value = contact.emoji || '👤';
+      setPhotoPreview(contact.photo || '');
 
       document.querySelector('#addContactForm h4').innerHTML = '✏️ Modificar Botón';
       document.getElementById('addContactForm').scrollIntoView({ behavior: 'smooth' });
@@ -779,6 +1031,7 @@
     function resetForm() {
       document.getElementById('editContactId').value = '';
       document.getElementById('addContactForm').reset();
+      removePhoto();
       document.querySelector('#addContactForm h4').innerHTML = '➕ Agregar / Modificar Contacto';
     }
 

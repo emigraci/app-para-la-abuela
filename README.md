@@ -39,12 +39,17 @@ Muchos adultos mayores encuentran dificultades con las interfaces sobrecargadas 
   - **Información médica y medicamentos**
 - Todos los datos son editables desde la propia aplicación.
 
-### 5. ⚙️ Administración y Ajustes
-- Permite añadir nuevos contactos, modificar nombres/números/iconos o eliminarlos.
+### 5. 📸 Fotos de Familiares en los Botones
+- Permite subir fotos directamente desde la galería o cámara del celular/PC, o descargarlas ingresando un enlace web (URL).
+- Las imágenes se optimizan, recortan al centro y comprimen de forma automática en el dispositivo en formato ultra-liviano.
+- Quedan guardadas en el teléfono para funcionar **100% offline** y permiten a la abuela identificar de un vistazo y con total claridad el rostro de cada hijo, hermano o familiar.
+
+### 6. ⚙️ Administración y Ajustes
+- Permite añadir nuevos contactos, modificar nombres/números/fotos/iconos o eliminarlos.
 - Los datos se guardan de forma permanente en el dispositivo (`localStorage`).
 - Botón de restauración para volver a los valores predeterminados en cualquier momento.
 
-### 6. 📱 PWA Instalable y Funcionamiento Offline
+### 7. 📱 PWA Instalable y Funcionamiento Offline
 - Se instala como una aplicación nativa en la pantalla principal del celular (Android y iPhone) sin requerir descarga desde tiendas de apps.
 - Incluye un **Service Worker** (`sw.js`) que almacena en caché la interfaz y recursos para que funcione incluso sin datos móviles ni conexión WiFi.
 
